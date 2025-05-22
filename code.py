@@ -6,10 +6,10 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix, classification_report
 
 # Step 1: Load the dataset
-data = pd.read_csv('Telco-Customer-Churn.csv')
+data = pd.read_csv('TelcoCustomerChurn.csv')
 
 # Keep a copy of original data for EDA
 data_orig = data.copy()
@@ -46,8 +46,39 @@ model = RandomForestClassifier(random_state=42)
 model.fit(X_train, y_train)
 
 # Step 6: Evaluate the Model
+#y_pred = model.predict(X_test)
+#print(classification_report(y_test, y_pred))
+
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+
+# Predict on test data
 y_pred = model.predict(X_test)
-print(classification_report(y_test, y_pred))
+
+# Evaluation Metrics
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1score = f1_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Print Metrics
+print(f"\nAccuracy : {accuracy:.4f}")
+print(f"Precision: {precision:.4f}")
+print(f"Recall   : {recall:.4f}")
+print(f"F1 Score : {f1score:.4f}")
+
+# Optional: Display confusion matrix as heatmap
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(6, 4))
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues")
+plt.title("Confusion Matrix")
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.tight_layout()
+plt.show()
+
 
 # Step 7: Plot Feature Importances
 importances = model.feature_importances_
